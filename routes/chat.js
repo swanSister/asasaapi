@@ -40,9 +40,11 @@ router.post('/getChatRoomList', async function(req, res){
     )
     WHERE 
     JSON_CONTAINS(chatRoom.outUserList,'${JSON.stringify([body.userId])}')=0 AND
-    (openerId = '${body.userId}') OR
-    ((openerId <> '${body.userId}' AND JSON_CONTAINS(chatRoom.userList,'${JSON.stringify([body.userId])}') ) AND (SELECT COUNT(*) FROM chat WHERE chatRoomId = chatRoom.chatRoomId) > 0)
-    ORDER BY chatRoom.createdAt DESC`
+    (
+		(openerId = '${body.userId}') OR
+    	((openerId <> '${body.userId}' AND JSON_CONTAINS(chatRoom.userList,'${JSON.stringify([body.userId])}') ) AND (SELECT COUNT(*) FROM chat WHERE chatRoomId = chatRoom.chatRoomId) > 0)
+	)
+	ORDER BY chatRoom.createdAt DESC`
 	console.log(q)
 	let q_res = await sql(q)
 	if(q_res.success){
