@@ -28,11 +28,13 @@ io.on('connection', (socket) => {
     });
 
     socket.on('joinList', function(userId) {
+      console.log('userjoin',userId)
       socket.join(userId);
       socket.userId = userId;
     });
 
     socket.on('message', function (data) {
+      console.log('send msg',data.message.writerId)
         io.sockets.in(data.message.chatRoomId).emit('message', data.message);
         io.sockets.in(data.message.writerId).emit('message', data.message);
     });
