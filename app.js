@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 3001
+const port = 3000
 var cors = require('cors');
 
 const users = require('./routes/users')
@@ -9,7 +9,7 @@ const posts = require('./routes/posts')
 const comments = require('./routes/comments')
 const chat = require('./routes/chat')
 const notice = require('./routes/notice')
-const io = require('socket.io')(3002);
+const io = require('socket.io')(3003);
 
 app.use(cors())
 app.use('/users', users);
