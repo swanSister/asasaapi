@@ -31,6 +31,16 @@ io.on('connection', (socket) => {
         io.sockets.in(data.message.chatRoomId).emit('message', data.message);
     });
 
+    socket.on('joinList', function(userId) {
+      socket.join(userId);
+      socket.userId = userId;
+    });
+
+    socket.on('message', function (data) {
+        io.sockets.in(data.message.chatRoomId).emit('message', data.message);
+        io.sockets.in(data.message.writerId).emit('message', data.message);
+    });
+
     socket.on('disconnect', () => {
      //console.log('user disconnected');
     });
