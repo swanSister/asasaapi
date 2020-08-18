@@ -23,7 +23,7 @@ router.post('/getList', async function(req, res){
 		let q_res = await sql(q)
 		if(q_res.success){
 			q_res.data.map(function(item){
-				item.writer = JSON.parse(item)
+				item.writer = JSON.parse(item.writer)
 			})
 			res.status(200).json({data:q_res.data})
 		}else{

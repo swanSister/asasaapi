@@ -154,14 +154,13 @@ router.post('/getDetail', async function(req, res){
 	WHERE post.postId='${body.postId}'`)
 	
 	if(q_res.success){
-		
 		let item = q_res.data[0]
 		item.writer = JSON.parse(item.writer)
 		
 		let q_res2 = await sql(`SELECT * FROM post_img 
 		WHERE postId='${body.postId}'`)
 		item.imgList = q_res2.data
-		
+
 		res.status(200).json({data:item})
 	}else{
 		res.status(403).send({message:q_res.errorMessage})
