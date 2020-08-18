@@ -33,17 +33,17 @@ router.post('/getChatRoomList', async function(req, res){
 		chat.createdAt > 
 			(SELECT readTime from chat_readTime 
 				WHERE chat_readTime.userId='${body.userId}' AND chat_readTime.chatRoomId=chatRoom.chatRoomId)
-		) AS notiCount
+		) AS notiCount,
 	FROM chatRoom
-	LEFT JOIN (SELECT * FROM chat ORDER BY createdAt DESC LIMIT 1) AS lc ON lc.chatRoomId=chatRoom.chatRoomId
+	JOIN (SELECT * FROM chat ORDER BY createdAt DESC LIMIT 1) AS lc ON lc.chatRoomId=chatRoom.chatRoomId
 	WHERE 
 	JSON_CONTAINS(chatRoom.outUserList,'${JSON.stringify([body.userId])}')=0 AND
 	(openerId = '${body.userId}') OR
 	((openerId <> '${body.userId}' AND JSON_CONTAINS(chatRoom.userList,'${JSON.stringify([body.userId])}') ) AND (SELECT COUNT(*) FROM chat WHERE chatRoomId = chatRoom.chatRoomId) > 0)
 	ORDER BY chatRoom.createdAt DESC`
 
+	console.log(q)
 	let q_res = await sql(q)
-	console.log(q_res.data)
 	if(q_res.success){
 		let result_arr = []
 
