@@ -27,21 +27,22 @@ router.post('/createChatRoom', async function(req, res){
 router.post('/getChatRoomList', async function(req, res){
 	let body = req.body
 	
-	let q = `SELECT chatRoom.*, lc.imgList, lc.writerId, lc.text, lc.createdAt as lastChat_createdAt,
-		(SELECT COUNT(*) FROM chat WHERE 
-		chat.chatRoomId=chatRoom.chatRoomId AND 
-		chat.createdAt > 
-			(SELECT readTime from chat_readTime 
-				WHERE chat_readTime.userId='${body.userId}' AND chat_readTime.chatRoomId=chatRoom.chatRoomId)
-		) AS notiCount,
-	FROM chatRoom
-	JOIN (SELECT * FROM chat ORDER BY createdAt DESC LIMIT 1) AS lc ON lc.chatRoomId=chatRoom.chatRoomId
-	WHERE 
-	JSON_CONTAINS(chatRoom.outUserList,'${JSON.stringify([body.userId])}')=0 AND
-	(openerId = '${body.userId}') OR
-	((openerId <> '${body.userId}' AND JSON_CONTAINS(chatRoom.userList,'${JSON.stringify([body.userId])}') ) AND (SELECT COUNT(*) FROM chat WHERE chatRoomId = chatRoom.chatRoomId) > 0)
-	ORDER BY chatRoom.createdAt DESC`
-
+	let q = `SELECT chatRoom.*, lc.imgList, lc.writerId, lc.text, 
+        (SELECT COUNT(*) FROM chat WHERE 
+        chat.chatRoomId=chatRoom.chatRoomId AND 
+        chat.createdAt > 
+            (SELECT readTime from chat_readTime 
+                WHERE chat_readTime.userId='${body.userId}' AND chat_readTime.chatRoomId=chatRoom.chatRoomId)
+        ) AS notiCount
+    FROM chatRoom
+    LEFT JOIN  chat AS lc ON lc.createdAt=(
+        SELECT createdAt FROM chat WHERE chatRoomId=chatRoom.chatRoomId ORDER BY createdAt DESC LIMIT 1 
+    )
+    WHERE 
+    JSON_CONTAINS(chatRoom.outUserList,'${JSON.stringify([body.userId])}')=0 AND
+    (openerId = '${body.userId}') OR
+    ((openerId <> '${body.userId}' AND JSON_CONTAINS(chatRoom.userList,'${JSON.stringify([body.userId])}') ) AND (SELECT COUNT(*) FROM chat WHERE chatRoomId = chatRoom.chatRoomId) > 0)
+    ORDER BY chatRoom.createdAt DESC`
 	console.log(q)
 	let q_res = await sql(q)
 	if(q_res.success){
