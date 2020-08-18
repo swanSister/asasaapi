@@ -27,10 +27,6 @@ io.on('connection', (socket) => {
       socket.room = room;
     });
 
-    socket.on('message', function (data) {
-        io.sockets.in(data.message.chatRoomId).emit('message', data.message);
-    });
-
     socket.on('joinList', function(userId) {
       socket.join(userId);
       socket.userId = userId;

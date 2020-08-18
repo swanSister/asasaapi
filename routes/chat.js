@@ -35,7 +35,7 @@ router.post('/getChatRoomList', async function(req, res){
 				WHERE chat_readTime.userId='${body.userId}' AND chat_readTime.chatRoomId=chatRoom.chatRoomId)
 		) AS notiCount
 	FROM chatRoom
-	LEFT JOIN (SELECT * FROM chat ORDER BY createdAt DESC LIMIT 1) AS lc ON lc.chatRoomId=chatRoom.chatRoomId
+	INNER JOIN (SELECT * FROM chat ORDER BY createdAt DESC LIMIT 1) AS lc ON lc.chatRoomId=chatRoom.chatRoomId
 	WHERE 
 	JSON_CONTAINS(chatRoom.outUserList,'${JSON.stringify([body.userId])}')=0 AND
 	(openerId = '${body.userId}') OR
