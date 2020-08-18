@@ -124,21 +124,18 @@ router.post('/getByTopicId', async function(req, res){
 
 router.post('/getByMine', async function(req, res){
 	let body = req.body
-	
-	let q_res = await sql(`(SELECT post.postId, post.title AS title, post.text, topic.name AS topicName, "1" AS type, post.createdAt from post 
+	let q = `(SELECT post.postId, post.title AS title, post.text, topic.name AS topicName, "1" AS type, post.createdAt from post 
 	INNER JOIN topic ON post.topicId=topic.topicId
 	WHERE post.writerId='${body.userId}'
-	
 	UNION
-
 	SELECT comment.postId, "" AS title, comment.text, topic.name AS topicName, "2" AS type, comment.createdAt from comment 
 		INNER JOIN post ON post.postId=comment.postId
 		INNER JOIN topic ON post.topicId=topic.topicId
 		WHERE comment.writerId='${body.userId}')
-
 	ORDER BY createdAt DESC LIMIT ${body.limit} OFFSET ${body.offset}
-	`)
-	
+	`
+	let q_res = await sql(q)
+	console.log(q)
 	if(q_res.success){
 		res.status(200).json({data:q_res.data})
 	}else{
