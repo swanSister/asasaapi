@@ -36,7 +36,7 @@ io.on('connection', (socket) => {
     socket.on('message', function (data) {
       console.log('send msg',data.message.writerId)
         io.sockets.in(data.message.chatRoomId).emit('message', data.message);
-        io.sockets.in(data.message.writerId).emit('message', data.message);
+        io.sockets.in(data.message.youId).emit('message', data.message);
     });
 
     socket.on('disconnect', () => {

@@ -27,7 +27,7 @@ router.post('/createChatRoom', async function(req, res){
 router.post('/getChatRoomList', async function(req, res){
 	let body = req.body
 	
-	let q = `SELECT chatRoom.*, lc.imgList, lc.writerId, lc.text, 
+	let q = `SELECT chatRoom.*, lc.imgList, lc.writerId, lc.text, lc.createdAt as lastChat_createdAt,
 		(SELECT COUNT(*) FROM chat WHERE 
 		chat.chatRoomId=chatRoom.chatRoomId AND 
 		chat.createdAt > 
@@ -60,6 +60,7 @@ router.post('/getChatRoomList', async function(req, res){
 				imgList: JSON.parse(item.imgList),
 				writerId: item.writerId,
 				text: item.text,
+				createdAt:item.lastChat_createdAt
 			}
 			result_arr.push(obj)
 		})
