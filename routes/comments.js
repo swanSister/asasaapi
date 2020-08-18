@@ -15,34 +15,17 @@ router.post('/getList', async function(req, res){
 		res.status(403).json({data:'check parameter'})
 		return
 	}
-	let q = `SELECT user.*, comment.* FROM comment
+	let q = `SELECT comment.* FROM comment
 		INNER JOIN user ON comment.writerId=user.userId
 		WHERE comment.postId='${body.postId}'
 		ORDER BY comment.createdAt DESC LIMIT ${body.limit} OFFSET ${body.offset} `
 		
 		let q_res = await sql(q)
-		let result_arr = []
 		if(q_res.success){
 			q_res.data.map(function(item){
-				let obj = {}
-				obj.commentId = item.commentId
-				obj.postId = item.postId
-				obj.text = item.text
-				obj.writerId = item.writerId
-				obj.imgList = JSON.parse(item.imgList)
-				obj.createdAt = item.createdAt
-				obj.updatedAt = item.updatedAt
-				
-				obj.writer = {
-					addressData: JSON.parse(item.addressData),
-					buildingName: item.buildingName,
-					houseType: item.houseType,
-					isPublic: item.isPublic,
-					userId: item.userId,
-				}
-				result_arr.push(obj)
+				item.writer = JSON.parse(item)
 			})
-			res.status(200).json({data:result_arr})
+			res.status(200).json({data:q_res.data})
 		}else{
 			res.status(403).send({message:q_res.errorMessage})
 		}
@@ -50,7 +33,7 @@ router.post('/getList', async function(req, res){
 router.post('/upload', async function(req, res){
 	let body = req.body
 	body.commentId = uniqid()
-	let q = `INSERT INTO comment VALUES ('${body.commentId}', '${body.postId}', '${body.writerId}', '${body.text}',
+	let q = `INSERT INTO comment VALUES ('${body.commentId}', '${body.postId}', '${body.writerId}','${JSON.stringify(body.writer)}', '${body.text}',
 	'${JSON.stringify([])}',
 	UTC_TIMESTAMP(), UTC_TIMESTAMP())`
 	let q_res = await sql(q)

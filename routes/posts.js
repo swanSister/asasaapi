@@ -27,43 +27,21 @@ router.post('/getByKeyword', async function(req, res){
 	(body.sort == 2 ? 'likeCount' : 
 	(body.sort == 3) ? 'post.viewCount' : 'commentCount')
 	
-	let q = `SELECT user.*, topic.name AS topicName, post.*,
+	let q = `SELECT topic.name AS topicName, post.*,
 		(SELECT COUNT(*) FROM comment WHERE post.postId = comment.postId) commentCount,
 		(SELECT COUNT(*) FROM like_user WHERE post.postId = like_user.postId) likeCount
 		FROM post
-		INNER JOIN user ON post.writerId=user.userId
 		INNER JOIN topic ON post.topicId=topic.topicId
 		WHERE (${topicQ}) AND (post.title LIKE '%${body.keyword}%' OR post.text LIKE '%${body.keyword}%')
 		ORDER BY ${sort} DESC LIMIT ${body.limit} OFFSET ${body.offset} `
 
 	let q_res = await sql(q)
 	
-	let result_arr = []
 	if(q_res.success){
 		q_res.data.map(function(item){
-			let obj = {}
-			obj.postId = item.postId
-			obj.topicId = item.topicId
-			obj.title = item.title
-			obj.text = item.text
-			obj.viewCount = item.viewCount
-			obj.likeCount = item.likeCount
-			obj.writerId = item.writerId
-			obj.thumbnailUrl = item.thumbnailUrl
-			obj.updatedAt = item.updatedAt
-			obj.createdAt = item.createdAt
-			obj.commentCount = item.commentCount
-			
-			obj.writer = {
-				addressData: JSON.parse(item.addressData),
-				buildingName: item.buildingName,
-				houseType: item.houseType,
-				isPublic: item.isPublic,
-				userId: item.userId,
-			}
-			result_arr.push(obj)
+			item.writer = JSON.parse(item.writer)
 		})
-		res.status(200).json({data:result_arr})
+		res.status(200).json({data:q_res.data})
 	}else{
 		res.status(403).send({message:q_res.errorMessage})
 	}
@@ -80,43 +58,21 @@ router.post('/getByTopicId', async function(req, res){
 	(body.sort == 2 ? 'likeCount' : 
 	(body.sort == 3) ? 'post.viewCount' : 'commentCount')
 	
-	let q = `SELECT user.*, topic.name AS topicName, post.*,
+	let q = `SELECT topic.name AS topicName, post.*,
 		(SELECT COUNT(*) FROM comment WHERE post.postId = comment.postId) commentCount,
 		(SELECT COUNT(*) FROM like_user WHERE post.postId = like_user.postId) likeCount
 		FROM post
-		INNER JOIN user ON post.writerId=user.userId
 		INNER JOIN topic ON post.topicId=topic.topicId
 		WHERE post.topicId='${req.body.topicId}'
 		ORDER BY ${sort} DESC LIMIT ${body.limit} OFFSET ${body.offset} `
 
 	let q_res = await sql(q)
 	
-	let result_arr = []
 	if(q_res.success){
 		q_res.data.map(function(item){
-			let obj = {}
-			obj.postId = item.postId
-			obj.topicId = item.topicId
-			obj.title = item.title
-			obj.text = item.text
-			obj.viewCount = item.viewCount
-			obj.likeCount = item.likeCount
-			obj.writerId = item.writerId
-			obj.thumbnailUrl = item.thumbnailUrl
-			obj.updatedAt = item.updatedAt
-			obj.createdAt = item.createdAt
-			obj.commentCount = item.commentCount
-			
-			obj.writer = {
-				addressData: JSON.parse(item.addressData),
-				buildingName: item.buildingName,
-				houseType: item.houseType,
-				isPublic: item.isPublic,
-				userId: item.userId,
-			}
-			result_arr.push(obj)
+			item.writer = JSON.parse(item.writer)
 		})
-		res.status(200).json({data:result_arr})
+		res.status(200).json({data:q_res.data})
 	}else{
 		res.status(403).send({message:q_res.errorMessage})
 	}
@@ -153,11 +109,10 @@ router.post('/getByBookmark', async function(req, res){
 	(body.sort == 2 ? 'likeCount' : 
 	(body.sort == 3) ? 'post.viewCount' : 'commentCount')
 	
-	let q = `SELECT user.*, topic.name AS topicName, post.*,
+	let q = `SELECT topic.name AS topicName, post.*,
 		(SELECT COUNT(*) FROM comment WHERE post.postId = comment.postId) commentCount,
 		(SELECT COUNT(*) FROM like_user WHERE post.postId = like_user.postId) likeCount
 		FROM post
-		INNER JOIN user ON post.writerId=user.userId
 		INNER JOIN topic ON post.topicId=topic.topicId
 		INNER JOIN bookmark_user ON bookmark_user.userId='${body.userId}'
 		WHERE post.postId=bookmark_user.postId
@@ -165,32 +120,11 @@ router.post('/getByBookmark', async function(req, res){
 
 	let q_res = await sql(q)
 	
-	let result_arr = []
 	if(q_res.success){
 		q_res.data.map(function(item){
-			let obj = {}
-			obj.postId = item.postId
-			obj.topicId = item.topicId
-			obj.title = item.title
-			obj.text = item.text
-			obj.viewCount = item.viewCount
-			obj.likeCount = item.likeCount
-			obj.writerId = item.writerId
-			obj.thumbnailUrl = item.thumbnailUrl
-			obj.updatedAt = item.updatedAt
-			obj.createdAt = item.createdAt
-			obj.commentCount = item.commentCount
-			
-			obj.writer = {
-				addressData: JSON.parse(item.addressData),
-				buildingName: item.buildingName,
-				houseType: item.houseType,
-				isPublic: item.isPublic,
-				userId: item.userId,
-			}
-			result_arr.push(obj)
+			item.writer = JSON.parse(item.writer)
 		})
-		res.status(200).json({data:result_arr})
+		res.status(200).json({data:q_res.data})
 	}else{
 		res.status(403).send({message:q_res.errorMessage})
 	}
@@ -200,7 +134,7 @@ router.post('/upload', async function(req, res){
 	let body = req.body
 	body.postId = uniqid()
 	
-	let q = `INSERT INTO post VALUES ('${body.postId}', '${body.topicId}', '${body.writerId}', '${body.title}', 
+	let q = `INSERT INTO post VALUES ('${body.postId}', '${body.topicId}', '${body.writerId}', '${JSON.stringify(body.writer)}','${body.title}', 
 	'${body.text}', NULL, ${body.viewCount}, UTC_TIMESTAMP(), UTC_TIMESTAMP())`
 	let q_res = await sql(q)
 	
@@ -212,41 +146,21 @@ router.post('/upload', async function(req, res){
 })
 router.post('/getDetail', async function(req, res){
 	let body = req.body
-	let q_res = await sql(`SELECT user.*, topic.name AS topicName, post.*,
+	let q_res = await sql(`SELECT topic.name AS topicName, post.*,
 	(SELECT COUNT(*) FROM comment WHERE comment.postId = '${body.postId}') commentCount,
 	(SELECT COUNT(*) FROM like_user WHERE like_user.postId = '${body.postId}') likeCount
 	FROM post
-	INNER JOIN user ON post.writerId=user.userId
 	INNER JOIN topic ON post.topicId=topic.topicId
 	WHERE post.postId='${body.postId}'`)
-
+	
 	if(q_res.success){
 		
 		let item = q_res.data[0]
-		let obj = {}
-			obj.postId = item.postId
-			obj.topicId = item.topicId
-			obj.title = item.title
-			obj.text = item.text
-			obj.viewCount = item.viewCount
-			obj.likeCount = item.likeCount
-			obj.commentCount = item.commentCount
-			obj.writerId = item.writerId
-			obj.thumbnailUrl = item.thumbnailUrl
-			obj.createdAt = item.createdAt
-			obj.updatedAt = item.updatedAt
-			
-			obj.writer = {
-				addressData: JSON.parse(item.addressData),
-				buildingName: item.buildingName,
-				houseType: item.houseType,
-				isPublic: item.isPublic,
-				userId: item.userId,
-			}
+		item.writer = JSON.parse(item.writer)
 		
 		let q_res2 = await sql(`SELECT * FROM post_img 
 		WHERE postId='${body.postId}'`)
-		obj.imgList = q_res2.data
+		item.imgList = q_res2.data
 		res.status(200).json({data:obj})
 	}else{
 		res.status(403).send({message:q_res.errorMessage})
