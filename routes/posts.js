@@ -133,7 +133,7 @@ router.post('/getByBookmark', async function(req, res){
 router.post('/upload', async function(req, res){
 	let body = req.body
 	body.postId = uniqid()
-	
+	console.log("upload post:", body)
 	let q = `INSERT INTO post VALUES ('${body.postId}', '${body.topicId}', '${body.writerId}', '${JSON.stringify(body.writer)}','${body.title}', 
 	'${body.text}', NULL, ${body.viewCount}, UTC_TIMESTAMP(), UTC_TIMESTAMP())`
 	let q_res = await sql(q)
