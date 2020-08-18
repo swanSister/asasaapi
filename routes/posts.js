@@ -55,7 +55,7 @@ router.post('/getByKeyword', async function(req, res){
 			obj.commentCount = item.commentCount
 			
 			obj.writer = {
-				addressData: item.addressData,
+				addressData: JSON.parse(item.addressData),
 				buildingName: item.buildingName,
 				houseType: item.houseType,
 				isPublic: item.isPublic,
@@ -108,7 +108,7 @@ router.post('/getByTopicId', async function(req, res){
 			obj.commentCount = item.commentCount
 			
 			obj.writer = {
-				addressData: item.addressData,
+				addressData: JSON.parse(item.addressData),
 				buildingName: item.buildingName,
 				houseType: item.houseType,
 				isPublic: item.isPublic,
@@ -182,7 +182,7 @@ router.post('/getByBookmark', async function(req, res){
 			obj.commentCount = item.commentCount
 			
 			obj.writer = {
-				addressData: item.addressData,
+				addressData: JSON.parse(item.addressData),
 				buildingName: item.buildingName,
 				houseType: item.houseType,
 				isPublic: item.isPublic,
@@ -237,7 +237,7 @@ router.post('/getDetail', async function(req, res){
 			obj.updatedAt = item.updatedAt
 			
 			obj.writer = {
-				addressData: item.addressData,
+				addressData: JSON.parse(item.addressData),
 				buildingName: item.buildingName,
 				houseType: item.houseType,
 				isPublic: item.isPublic,

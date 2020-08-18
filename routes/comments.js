@@ -34,7 +34,7 @@ router.post('/getList', async function(req, res){
 				obj.updatedAt = item.updatedAt
 				
 				obj.writer = {
-					addressData: item.addressData,
+					addressData: JSON.parse(item.addressData),
 					buildingName: item.buildingName,
 					houseType: item.houseType,
 					isPublic: item.isPublic,
