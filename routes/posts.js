@@ -277,12 +277,13 @@ router.post('/getBookmarkList', async function(req, res){
 
 router.post('/deleteById', async function(req, res){
 	let body = req.body
+	console.log('body',body)
 	if(body.imgList.length){
 		for(let i in body.imgList){ // url ex) https://api.asasakorea.com/uploads/post/392o59qke115ozk_0_post.jpeg
 			let filePath = body.imgList[i].url.replace('https://api.asasakorea.com','.')
 			console.log("remove file : ", filePath)
 			try {
-				fs.unlinkSync('sample.txt')
+				fs.unlinkSync(filePath)
 			  } catch (err) {
 				console.log("###error file remove")
 				console.error(err)
