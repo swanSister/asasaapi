@@ -290,7 +290,7 @@ router.post('/deleteById', async function(req, res){
 	let q_res = await sql(`DELETE FROM post WHERE postId='${body.postId}'`)
 	if(q_res.success){
 		//댓글 제거
-		let commentList = await sql(`SELECT * FROM comment WHERE postId='${body.postId}`)
+		let commentList = await sql(`SELECT * FROM comment WHERE postId='${body.postId}'`)
 		for(var i in commentList.data){
 			let imgList = JSON.parse(commentList.data[i].imgList)
 			if(imgList.length){
@@ -304,7 +304,7 @@ router.post('/deleteById', async function(req, res){
 				}
 			}
 		}
-		await sql(`SELECT FROM comment WHERE postId='${body.postId}`)
+		await sql(`SELECT FROM comment WHERE postId='${body.postId}'`)
 		res.status(200).json({data:q_res.data})
 	}else{
 		res.status(403).send({message:q_res.errorMessage})
