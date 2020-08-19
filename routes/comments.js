@@ -44,5 +44,23 @@ router.post('/upload', async function(req, res){
 		res.status(403).send({message:q_res.errorMessage})
 	}
 })
-
+router.post('/deleteById', async function(req, res){
+	let body = req.body
+	if(body.imgList.length){
+		for(var i in body.imgList){// url ex) https://api.asasakorea.com/uploads/post/392o59qke115ozk_0_post.jpeg
+			let filePath = body.imgList[i].replace('https://api.asasakorea.com','.')
+			try {
+				fs.unlinkSync(filePath)
+			  } catch (err) {
+				console.error(err)
+			  }
+		}
+	}
+	let q_res = await sql(`DELETE FROM comment WHERE commentId='${body.commentId}'`)
+	if(q_res.success){
+		res.status(200).json({data:q_res.data})
+	}else{
+		res.status(403).send({message:q_res.errorMessage})
+	}
+})
 module.exports = router;

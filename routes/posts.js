@@ -134,7 +134,6 @@ router.post('/getByBookmark', async function(req, res){
 router.post('/upload', async function(req, res){
 	let body = req.body
 	body.postId = uniqid()
-	console.log("upload post:", body)
 	let q = `INSERT INTO post VALUES ('${body.postId}', '${body.topicId}', '${body.writerId}', '${JSON.stringify(body.writer)}','${body.title}', 
 	'${body.text}', NULL, ${body.viewCount}, UTC_TIMESTAMP(), UTC_TIMESTAMP())`
 	let q_res = await sql(q)
@@ -187,8 +186,7 @@ router.post('/setLike', async function(req, res){
 	let q_res = await sql(`INSERT INTO like_user (postId, userId, createdAt, updatedAt)
 	SELECT '${body.postId}', '${body.userId}', UTC_TIMESTAMP(), UTC_TIMESTAMP()
 	WHERE NOT EXISTS (SELECT postId FROM like_user WHERE postId='${body.postId}' AND userId='${body.userId}')`)
-	
-	console.log(q_res.data)
+
 	if(q_res.success){
 		let q_res2 = await sql(`SELECT postId FROM like_user WHERE userId='${body.userId}'`)
 		if(q_res2.success){
@@ -235,7 +233,6 @@ router.post('/setBookmark', async function(req, res){
 	SELECT '${body.postId}', '${body.userId}', UTC_TIMESTAMP(), UTC_TIMESTAMP()
 	WHERE NOT EXISTS (SELECT postId FROM bookmark_user WHERE postId='${body.postId}' AND userId='${body.userId}')`)
 	
-	console.log(q_res.data)
 	if(q_res.success){
 		let q_res2 = await sql(`SELECT postId FROM bookmark_user WHERE userId='${body.userId}'`)
 		if(q_res2.success){
