@@ -304,7 +304,7 @@ router.post('/deleteById', async function(req, res){
 				}
 			}
 		}
-		await sql(`SELECT FROM comment WHERE postId='${body.postId}'`)
+		await sql(`DELETE FROM comment WHERE postId='${body.postId}'`)
 		res.status(200).json({data:q_res.data})
 	}else{
 		res.status(403).send({message:q_res.errorMessage})
