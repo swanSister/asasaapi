@@ -7,6 +7,7 @@ const sql = require('../query.js')
 const qs = require('qs')
 const uniqid = require('uniqid');
 const e = require('express')
+const fs = require('fs')
 router.use(express.json())
 
 router.post('/getByKeyword', async function(req, res){
@@ -267,6 +268,29 @@ router.post('/getBookmarkList', async function(req, res){
 	let body = req.body
 
 	let q_res = await sql(`SELECT postId FROM bookmark_user WHERE userId='${body.userId}'`)
+	if(q_res.success){
+		res.status(200).json({data:q_res.data})
+	}else{
+		res.status(403).send({message:q_res.errorMessage})
+	}
+})
+//DELeTE
+
+router.post('/deleteById', async function(req, res){
+	let body = req.body
+	if(body.imgList.length){
+		for(let i in body.imgList){ // url ex) https://api.asasakorea.com/uploads/post/392o59qke115ozk_0_post.jpeg
+			let filePath = body.imgList[i].url.replace('https://api.asasakorea.com','.')
+			console.log("remove file : ", filePath)
+			try {
+				fs.unlinkSync('sample.txt')
+			  } catch (err) {
+				console.log("###error file remove")
+				console.error(err)
+			  }
+		}
+	}
+	let q_res = await sql(`DELETE FROM post WHERE postId='${body.postId}'`)
 	if(q_res.success){
 		res.status(200).json({data:q_res.data})
 	}else{

@@ -10,7 +10,6 @@ const comments = require('./routes/comments')
 const chat = require('./routes/chat')
 const notice = require('./routes/notice')
 const io = require('socket.io')(3003);
-
 app.use(cors())
 app.use('/users', users);
 app.use('/posts', posts);

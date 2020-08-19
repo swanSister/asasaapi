@@ -120,7 +120,6 @@ var upload = function (req, res) {
       let q_res = await sql(`SELECT imgList FROM chat WHERE chatId='${chatId}'`)
       console.log('chat',q_res.data)
       if(q_res.success){
-
         let imgList = JSON.parse(q_res.data[0].imgList)
         imgList.push(url)
         let q_res2 = await sql(`UPDATE chat SET imgList='${JSON.stringify(imgList)}' WHERE chatId='${chatId}'`)
