@@ -274,7 +274,6 @@ router.post('/getBookmarkList', async function(req, res){
 		res.status(403).send({message:q_res.errorMessage})
 	}
 })
-//DELeTE
 
 router.post('/deleteById', async function(req, res){
 	let body = req.body
