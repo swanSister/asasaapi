@@ -7,6 +7,8 @@ const sql = require('../query.js')
 const qs = require('qs')
 const uniqid = require('uniqid');
 const e = require('express')
+const fs = require('fs')
+
 router.use(express.json())
 
 router.post('/getList', async function(req, res){
