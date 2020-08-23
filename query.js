@@ -5,7 +5,7 @@ const mysql = require(`mysql-await`)
 
 var connection;
 function handleDisconnect() {
-    connection = mysql.createConnection(dbConfig);  // Recreate the connection, since the old one cannot be reused.
+    connection = mysql.createConnection(dbconfig);  // Recreate the connection, since the old one cannot be reused.
     connection.connect( function onConnect(err) {   // The server is either down
         if (err) {                                  // or restarting (takes a while sometimes).
             console.log('error when connecting to db:', err);
