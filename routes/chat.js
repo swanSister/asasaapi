@@ -35,7 +35,7 @@ router.post('/getChatRoomList', async function(req, res){
                 WHERE chat_readTime.userId='${body.userId}' AND chat_readTime.chatRoomId=chatRoom.chatRoomId)
         ) AS notiCount
     FROM chatRoom
-    LEFT JOIN  chat AS lc ON lc.createdAt=(
+    JOIN  chat AS lc ON lc.createdAt=(
         SELECT createdAt FROM chat WHERE chatRoomId=chatRoom.chatRoomId ORDER BY createdAt DESC LIMIT 1 
     )
     WHERE 
