@@ -84,6 +84,28 @@ var upload = function (req, res) {
     })
   })
 
+  router.post('/notice/:filename', async function(req, res, next) {
+    req.folderName = 'notice'
+    
+    upload(req, res).then(async function (file) {
+      let text = req.body.text
+      let noticeId = file.name.split('_')[0]
+      let url = `${global.API_URL}/uploads/${req.folderName}/${file.name}.${file.ext}`
+      
+      let q_res = await sql(`INSERT INTO notice_img VALUES('${noticeId}', '${url}', '${text}', UTC_TIMESTAMP(), UTC_TIMESTAMP())`)
+      
+      if(q_res.success){
+        res.status(200).json({data:url})
+      }
+      else 
+        res.status(403).send({message:q_res.errorMessage})
+
+    }, function (err) {
+      console.log(err)
+      res.status(500).send({message:'upload error'});
+    })
+  })
+
   router.post('/comment/:filename', async function(req, res, next) {
     req.folderName = 'comment'
     upload(req, res).then(async function (file) {
