@@ -35,6 +35,23 @@ router.post('/get', async function(req, res){
 		res.status(403).send({message:q_res.errorMessage})
 	}
 })
+router.post('/getDetail', async function(req, res){
+	let body = req.body
+	let q_res = await sql(`SELECT * FROM notice WHERE noticeId='${body.noticeId}'`)
+												
+	if(q_res.success){
+		let item = q_res.data[0]
+		item.writer = JSON.parse(item.writer)
+		
+		let q_res2 = await sql(`SELECT * FROM notice_img 
+		WHERE noticeId='${body.noticeId}'`)
+		item.imgList = q_res2.data
+
+		res.status(200).json({data:item})
+	}else{
+		res.status(403).send({message:q_res.errorMessage})
+	}
+})
 router.post('/delete', async function(req, res){
 	let body = req.body
 	let q_res = await sql(`DELETE FROM notice WHERE noticeId='${body.noticeId}'`)
@@ -47,7 +64,7 @@ router.post('/delete', async function(req, res){
 			console.error(err)
 		  }
 	}
-	
+
 	if(q_res.success){
 		res.status(200).json({data:q_res.data})
 	}else{
