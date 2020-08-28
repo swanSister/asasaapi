@@ -26,28 +26,6 @@ router.post('/createChatRoom', async function(req, res){
 })
 router.post('/getChatRoomList', async function(req, res){
 	let body = req.body
-	/*
-	SELECT chatRoom.*, 
-        (SELECT COUNT(*) FROM chat WHERE 
-        chat.chatRoomId=chatRoom.chatRoomId AND 
-        chat.createdAt > 
-            (SELECT readTime from chat_readTime 
-                WHERE chat_readTime.userId='giyn8i' AND chat_readTime.chatRoomId=chatRoom.chatRoomId)
-        ) AS notiCount, 
-
-(SELECT text FROM chat WHERE chatRoomId=chatRoom.chatRoomId ORDER BY createdAt DESC LIMIT 1  ) AS text,
-(SELECT imgList FROM chat WHERE chatRoomId=chatRoom.chatRoomId ORDER BY createdAt DESC LIMIT 1  ) AS imgList,
-(SELECT writerId FROM chat WHERE chatRoomId=chatRoom.chatRoomId ORDER BY createdAt DESC LIMIT 1  ) AS writerId
-    FROM chatRoom
-    WHERE 
-    JSON_CONTAINS(chatRoom.outUserList,'["giyn8i"]')=0 AND
-    (
-		(openerId = 'giyn8i') OR
-    	((openerId <> 'giyn8i' AND JSON_CONTAINS(chatRoom.userList,'["giyn8i"]') ) AND (SELECT COUNT(*) FROM chat WHERE chatRoomId = chatRoom.chatRoomId) > 0)
-	)
-	ORDER BY chatRoom.createdAt DESC;
-	
-	*/
 	let q = `SELECT chatRoom.*,
         (SELECT COUNT(*) FROM chat WHERE chat.chatRoomId=chatRoom.chatRoomId AND 
         chat.createdAt > (SELECT readTime from chat_readTime WHERE chat_readTime.userId='${body.userId}' AND chat_readTime.chatRoomId=chatRoom.chatRoomId)) AS notiCount,
@@ -122,10 +100,19 @@ router.post('/sendChatMessage', async function(req, res){
 	UTC_TIMESTAMP(), UTC_TIMESTAMP())`
 
 	let q2 = `UPDATE chatRoom SET outUserList='${JSON.stringify([])}' 
-	WHERE chatRoomId='${body.chatRoomId}'`
+	WHERE chatRoomId='${body.chatRoomId}'` //채팅방 나가기 한 경우 초기화 시키기
+
+	
+	let count_res = await sql(`SELECT COUNT(*) FROM chat WHERE chatroomId='${body.chatRoomId}'`)
+	console.log("###########chat count#############")
+	console.log(count_res)
+	
+	if(count_res.data == 0){//첫 채팅 > alarm, type=1(채팅 알람), targetId=채팅방Id,
+		await sql(`INSERT INTO alarm VALUES ('${alarmaId}', '${body.writerId}', 1, 
+		'${body.chatRoomId}',0, false, UTC_TIMESTAMP(), UTC_TIMESTAMP())`)
+	}
 
 	let q_res = await sql(q)
-	
 	if(q_res.success){
 		let q_res2 = await sql(q2)
 		if(q_res2.success){
