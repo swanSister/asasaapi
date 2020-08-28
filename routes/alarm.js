@@ -12,7 +12,7 @@ router.use(express.json())
 router.post('/getAlarm', async function(req, res){
 	let body = req.body
 
-	let q = `SELECT * FROM alarm WHERE userId='${body.userId}' ORDER BY createdAt DESC LIMIT ${body.limit} OFFSET ${body.offset}`
+	let q = `SELECT * FROM alarm WHERE userId='${body.userId}' ORDER BY updatedAt DESC LIMIT ${body.limit} OFFSET ${body.offset}`
 
 	let q_res = await sql(q)
 
