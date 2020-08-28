@@ -43,19 +43,17 @@ router.post('/upload', async function(req, res){
 	let q_res = await sql(q)
 	if(q_res.success){
 		let alarmId = uniqid()
+
 		let targetData = {
 			topicName:body.postData.topicName,
 			title:body.postData.title
 		}
-		let q2 = `INSERT INTO alarm VALUES('${alarmId}','${body.postData.postId}', 2, '${body.postId}','${JSON.stringify(targetData)}', 1, false, UTC_TIMESTAMP(), UTC_TIMESTAMP())
-			ON DUPLICATE KEY UPDATE alarmCount=alarmCount + 1`
-		let q_res2 = await sql(q2)
-		if(q_res2.success){
-			res.status(200).json({data:body})
+
+		if(body.postData.writerId != body.writerId){
+			await sql(`INSERT INTO alarm VALUES('${alarmId}','${body.postData.writerId}', 2, '${body.postId}','${JSON.stringify(targetData)}', 1, false, UTC_TIMESTAMP(), UTC_TIMESTAMP())
+			ON DUPLICATE KEY UPDATE alarmCount=alarmCount + 1`)
 		}
-		else{
-			res.status(403).send({message:q_res2.errorMessage})
-		}
+		res.status(200).json({data:body})
 	}else{
 		res.status(403).send({message:q_res.errorMessage})
 	}

@@ -84,7 +84,7 @@ router.post('/getChatRoom', async function(req, res){
 			q_res.data[0].outUserList = JSON.parse(q_res.data[0].outUserList)
 			
 			let youData = q_res2.data[0]
-			q_res.data[0].youData ={
+			q_res.data[0].youData = {
 				userId: youData.userId,
 				addressData: JSON.parse(youData.addressData),
 				isPublic: youData.isPublic,
