@@ -103,11 +103,10 @@ router.post('/sendChatMessage', async function(req, res){
 	WHERE chatRoomId='${body.chatRoomId}'` //채팅방 나가기 한 경우 초기화 시키기
 
 	
-	let count_res = await sql(`SELECT COUNT(*) FROM chat WHERE chatroomId='${body.chatRoomId}'`)
+	let count_res = await sql(`SELECT COUNT(*) AS count FROM chat WHERE chatroomId='${body.chatRoomId}'`)
 	console.log("###########chat count#############")
-	console.log(count_res)
-	
-	if(count_res.data == 0){//첫 채팅 > alarm, type=1(채팅 알람), targetId=채팅방Id,
+	console.log(count_res.data[0].count)
+	if(count_res.data[0].count == 0){//첫 채팅 > alarm, type=1(채팅 알람), targetId=채팅방Id,
 		await sql(`INSERT INTO alarm VALUES ('${alarmaId}', '${body.writerId}', 1, 
 		'${body.chatRoomId}',0, false, UTC_TIMESTAMP(), UTC_TIMESTAMP())`)
 	}
