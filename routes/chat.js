@@ -117,8 +117,8 @@ router.post('/sendChatMessage', async function(req, res){
 		let youId = body.youData.userId
 		
 		let targetData = {
-			userId: body.youData.userId,
-			buildingName: body.youData.buildingName
+			userId: body.writer.userId,
+			buildingName: body.writer.buildingName
 		}
 		
 		await sql(`INSERT INTO alarm VALUES ('${alarmaId}', '${youId}', 1, 

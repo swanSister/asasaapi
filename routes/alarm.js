@@ -17,7 +17,7 @@ router.post('/getAlarm', async function(req, res){
 	let q_res = await sql(q)
 
 	if(q_res.success){
-		res.status(200).json({data:q_res.data[0]})
+		res.status(200).json({data:q_res.data})
 	}else{
 		res.status(403).send({message:q_res.errorMessage})
 	}
