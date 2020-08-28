@@ -82,7 +82,7 @@ router.post('/getChatRoom', async function(req, res){
 		if(q_res2.success){
 			q_res.data[0].userList = JSON.parse(q_res.data[0].userList)
 			q_res.data[0].outUserList = JSON.parse(q_res.data[0].outUserList)
-			q_res.data[0].youData = q_res2.data[0]
+			q_res.data[0].youData = JSON.parse(q_res2.data[0])
 			res.status(200).json({data:q_res.data[0]})
 		}else{
 			res.status(403).send({message:q_res.errorMessage})
@@ -106,9 +106,15 @@ router.post('/sendChatMessage', async function(req, res){
 	let count_res = await sql(`SELECT COUNT(*) AS count FROM chat WHERE chatroomId='${body.chatRoomId}'`)
 	if(count_res.data[0].count == 0){//첫 채팅 > alarm, type=1(채팅 알람), targetId=채팅방Id,
 		let alarmaId = uniqid()
-		let youId = body.userList[0] == body.writerId ? body.userList[1] : body.userList[0]
+		let youId = body.youData.userId
+		
+		let targetData = {
+			userId: body.youData.userId,
+			buildingName: body.youData.buildingName
+		}
+		
 		await sql(`INSERT INTO alarm VALUES ('${alarmaId}', '${youId}', 1, 
-		'${body.chatRoomId}',0, false, UTC_TIMESTAMP(), UTC_TIMESTAMP())`)
+		'${body.chatRoomId}', '${JSON.stringify(targetData)}', 0, false, UTC_TIMESTAMP(), UTC_TIMESTAMP())`)
 	}
 
 	let q_res = await sql(q)

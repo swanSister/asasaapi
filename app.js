@@ -9,6 +9,8 @@ const posts = require('./routes/posts')
 const comments = require('./routes/comments')
 const chat = require('./routes/chat')
 const notice = require('./routes/notice')
+const alarm = require('./routes/alarm')
+
 const io = require('socket.io')(3003);
 app.use(cors())
 app.use('/users', users);
@@ -17,6 +19,8 @@ app.use('/comments', comments);
 app.use('/images', images);
 app.use('/chat', chat);
 app.use('/notice', notice);
+app.use('/alarm', alarm);
+
 app.set('socketio', io); 
 
 io.on('connection', (socket) => {
