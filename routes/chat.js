@@ -82,7 +82,7 @@ router.post('/getChatRoom', async function(req, res){
 		if(q_res2.success){
 			q_res.data[0].userList = JSON.parse(q_res.data[0].userList)
 			q_res.data[0].outUserList = JSON.parse(q_res.data[0].outUserList)
-			q_res.data[0].youData = JSON.parse(q_res2.data[0])
+			q_res.data[0].youData = q_res2.data[0]
 			res.status(200).json({data:q_res.data[0]})
 		}else{
 			res.status(403).send({message:q_res.errorMessage})
