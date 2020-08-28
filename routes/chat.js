@@ -107,6 +107,7 @@ router.post('/sendChatMessage', async function(req, res){
 	console.log("###########chat count#############")
 	console.log(count_res.data[0].count)
 	if(count_res.data[0].count == 0){//첫 채팅 > alarm, type=1(채팅 알람), targetId=채팅방Id,
+		let alarmaId = uniqid()
 		await sql(`INSERT INTO alarm VALUES ('${alarmaId}', '${body.writerId}', 1, 
 		'${body.chatRoomId}',0, false, UTC_TIMESTAMP(), UTC_TIMESTAMP())`)
 	}
