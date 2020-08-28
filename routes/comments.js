@@ -39,9 +39,19 @@ router.post('/upload', async function(req, res){
 	let q = `INSERT INTO comment VALUES ('${body.commentId}', '${body.postId}', '${body.writerId}','${JSON.stringify(body.writer)}', '${body.text}',
 	'${JSON.stringify([])}',
 	UTC_TIMESTAMP(), UTC_TIMESTAMP())`
+
 	let q_res = await sql(q)
 	if(q_res.success){
-		res.status(200).json({data:body})
+		let alarmId = uniqid()
+		let q2 = `INSERT INTO alarm VALUES('${alarmId}','${body.postWriterId}', 2, '${body.postId}', 1, false, UTC_TIMESTAMP(), UTC_TIMESTAMP(), UTC_TIMESTAMP())
+			ON DUPLICATE KEY UPDATE alarmCount=alarmCount + 1`
+		let q_res2 = await sql(q2)
+		if(q_res2.success){
+			res.status(200).json({data:body})
+		}
+		else{
+			res.status(403).send({message:q_res2.errorMessage})
+		}
 	}else{
 		res.status(403).send({message:q_res.errorMessage})
 	}
