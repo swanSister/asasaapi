@@ -48,7 +48,7 @@ io.on('connection', (socket) => {
   });
 
 app.get('/uploads/*', function(req, res, path){
-    let fileName = req.url.split("/")[2]
+    let fileName = req.url.split("/")[3]
     console.log(fileName)
     var imagePath =  __dirname+req.url
     res.sendFile(`${imagePath}`);
