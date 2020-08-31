@@ -22,7 +22,7 @@ var upload = function (req, res) {
   
       filename: function (req, file, cb) {
         file.uploadedFile = {
-          name: req.params.filename,
+          name: encodeURIComponent(req.params.filename),
           ext: file.mimetype.split('/')[1]
         };
         cb(null, file.uploadedFile.name + '.' + file.uploadedFile.ext);
