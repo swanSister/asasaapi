@@ -49,6 +49,6 @@ io.on('connection', (socket) => {
 
 app.get('/uploads/*', function(req, res, path){
     var imagePath =  __dirname+req.url
-    res.sendFile(`${imagePath}`);
+    res.sendFile(`${encodeURIComponent(imagePath)}`);
   })
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
