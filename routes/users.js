@@ -183,9 +183,10 @@ router.patch('/setAuth', async function(req, res){
 				insertTopic(`b_${addressData.b_code}`, addressData.bname)
 				insertTopicUser(`b_${addressData.b_code}`, body.userId)
 			}
-			if(body.houseType == 1 && addressData.buildingName){//아파트별 토픽 생성
-				insertTopic(`building_${addressData.buildingName}`, addressData.buildingName)
-				insertTopicUser(`building_${addressData.buildingName}`, body.userId)
+			if(body.houseType == 1 && addressData.buildingName && addressData.buildingCode){//아파트별 토픽 생성
+				addressData.buildingCode = addressData.buildingCode.substring(0,14)
+				insertTopic(`building_${addressData.buildingCode}`, addressData.buildingName)
+				insertTopicUser(`building_${addressData.buildingCode}`, body.userId)
 			}
 		}
 		res.status(200).json({data:null})
