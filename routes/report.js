@@ -15,7 +15,7 @@ router.post('/upload', async function(req, res){
 	body.reportId = uniqid()
 
 	let q = `INSERT INTO report VALUES ('${body.reportId}', '${body.userId}','${body.targetId}', 
-	'${body.type}', '${body.reason}', '${body.etc}',
+	'${body.reportType}', '${body.reason}', '${body.etc}',
 	 UTC_TIMESTAMP(), UTC_TIMESTAMP())`
 	
 	 let q_res = await sql(q)
