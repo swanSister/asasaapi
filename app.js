@@ -10,6 +10,7 @@ const comments = require('./routes/comments')
 const chat = require('./routes/chat')
 const notice = require('./routes/notice')
 const alarm = require('./routes/alarm')
+const report = require('./routes/report')
 
 const io = require('socket.io')(3003);
 app.use(cors())
@@ -20,6 +21,7 @@ app.use('/images', images);
 app.use('/chat', chat);
 app.use('/notice', notice);
 app.use('/alarm', alarm);
+app.use('/report', report);
 
 app.set('socketio', io); 
 
