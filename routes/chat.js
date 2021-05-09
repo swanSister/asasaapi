@@ -52,9 +52,9 @@ router.post('/getNoticount', async function(req, res){
 			let isBlock = false
 			
 			if(blockList.success){
-				for(let i in obj.userList){
+				for(let i in userList){
 					for(let j in blockList.data){
-						if(obj.userList[i]==blockList.data[j].targetId){
+						if(userList[i]==blockList.data[j].targetId){
 							isBlock = true
 							break
 						}
