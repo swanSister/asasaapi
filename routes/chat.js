@@ -24,21 +24,49 @@ router.post('/createChatRoom', async function(req, res){
 		res.status(403).send({message:q_res.errorMessage})
 	}
 })
-router.post('/getChatNoticount', async function(req, res){
+router.post('/getNoticount', async function(req, res){
+	
 	let body = req.body
-	body.chatRoomId = uniqid()
 	
-	let q = `SELECT chatRoom.*,
+	let blockList = await sql(`SELECT targetId FROM block WHERE userId = '${body.userId}'`)
+	
+	let q = `SELECT chatRoom.chatRoomId,
         (SELECT COUNT(*) FROM chat WHERE chat.chatRoomId=chatRoom.chatRoomId AND 
-        chat.createdAt > (SELECT readTime from chat_readTime WHERE chat_readTime.userId='${body.userId}' AND chat_readTime.chatRoomId=chatRoom.chatRoomId)) AS notiCount,
+        chat.createdAt > (SELECT readTime from chat_readTime WHERE chat_readTime.userId='${body.userId}' AND chat_readTime.chatRoomId=chatRoom.chatRoomId)) AS notiCount
     FROM chatRoom
-    WHERE 
-    JSON_CONTAINS(chatRoom.userList,'${JSON.stringify([body.userId])}')
+	WHERE
+    JSON_CONTAINS(chatRoom.outUserList,'${JSON.stringify([body.userId])}')=0 AND
+    (
+		(openerId = '${body.userId}') OR
+    	((openerId <> '${body.userId}' AND JSON_CONTAINS(chatRoom.userList,'${JSON.stringify([body.userId])}') ) AND (SELECT COUNT(*) FROM chat WHERE chatRoomId = chatRoom.chatRoomId) > 0)
+	)
 	ORDER BY chatRoom.createdAt DESC`
+	console.log(q)
 	let q_res = await sql(q)
-	
 	if(q_res.success){
-		res.status(200).json({data:body})
+		let result_count = 0
+
+		q_res.data.map(function(item){
+			let userList = JSON.parse(item.userList)
+
+			let isBlock = false
+			
+			if(blockList.success){
+				for(let i in obj.userList){
+					for(let j in blockList.data){
+						if(obj.userList[i]==blockList.data[j].targetId){
+							isBlock = true
+							break
+						}
+					}
+					if(isBlock) break
+				}
+			}
+			if(!isBlock){
+				result_count +=item.notiCount
+			}
+		})
+		res.status(200).json({data:result_count})
 	}else{
 		res.status(403).send({message:q_res.errorMessage})
 	}
