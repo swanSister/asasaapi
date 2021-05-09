@@ -46,6 +46,9 @@ router.post('/getChatNoticount', async function(req, res){
 		
 router.post('/getChatRoomList', async function(req, res){
 	let body = req.body
+	
+	let blockList = await sql(`SELET targetId FROM block WHERE userId = '${body.userId}'`)
+	
 	let q = `SELECT chatRoom.*,
         (SELECT COUNT(*) FROM chat WHERE chat.chatRoomId=chatRoom.chatRoomId AND 
         chat.createdAt > (SELECT readTime from chat_readTime WHERE chat_readTime.userId='${body.userId}' AND chat_readTime.chatRoomId=chatRoom.chatRoomId)) AS notiCount,
@@ -55,7 +58,6 @@ router.post('/getChatRoomList', async function(req, res){
 		(SELECT writerId FROM chat WHERE chatRoomId=chatRoom.chatRoomId ORDER BY createdAt DESC LIMIT 1  ) AS writerId
     FROM chatRoom
 	WHERE
-	JSON_CONTAINS(chatRoom.outUserList, notiCount)=0 AND
     JSON_CONTAINS(chatRoom.outUserList,'${JSON.stringify([body.userId])}')=0 AND
     (
 		(openerId = '${body.userId}') OR
@@ -83,7 +85,23 @@ router.post('/getChatRoomList', async function(req, res){
 				text: item.text,
 				createdAt:item.lastChat_createdAt
 			}
-			result_arr.push(obj)
+			let isBlock = false
+
+			if(blockList.success){
+				for(let i in obj.userList){
+					for(let j in blockList.data){
+						if(obj.userList[i]==blockList.data[j].targetId){
+							isBlock = true
+							break
+						}
+					}
+					if(isBlock) break
+				}
+			}
+			if(!isBlock){
+				result_arr.push(obj)
+			}
+			
 		})
 		res.status(200).json({data:result_arr})
 	}else{
