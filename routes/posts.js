@@ -138,6 +138,13 @@ router.post('/upload', async function(req, res){
 	'${body.text}', NULL, ${body.viewCount}, UTC_TIMESTAMP(), UTC_TIMESTAMP())`
 	let q_res = await sql(q)
 	
+
+	//전체토픽 아닌경우 전체토픽에도 올리기 <<<< 추후 분리~
+	if(body.topicId != '0_main'){
+		await sql(`INSERT INTO post VALUES ('${body.postId}', 0_main, '${body.writerId}', '${JSON.stringify(body.writer)}','${body.title}', 
+		'${body.text}', NULL, ${body.viewCount}, UTC_TIMESTAMP(), UTC_TIMESTAMP())`)
+	}
+	
 	if(q_res.success){
 		res.status(200).json({data:body})
 	}else{

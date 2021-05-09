@@ -57,9 +57,7 @@ router.post('/getNoticount', async function(req, res){
 			
 			if(blockList.success){
 				for(let i in userList){
-					console.log(userList[i])
 					for(let j in blockList.data){
-						console.log(userList[j])
 						if(userList[i] == blockList.data[j].targetId){
 							isBlock = true
 							break
