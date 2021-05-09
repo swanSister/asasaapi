@@ -41,20 +41,23 @@ router.post('/getNoticount', async function(req, res){
     	((openerId <> '${body.userId}' AND JSON_CONTAINS(chatRoom.userList,'${JSON.stringify([body.userId])}') ) AND (SELECT COUNT(*) FROM chat WHERE chatRoomId = chatRoom.chatRoomId) > 0)
 	)
 	ORDER BY chatRoom.createdAt DESC`
-	console.log(q)
+	
 	let q_res = await sql(q)
 	if(q_res.success){
 		let result_count = 0
 
 		q_res.data.map(function(item){
+			console.log("#########item")
 			let userList = JSON.parse(item.userList)
 
 			let isBlock = false
 			
 			if(blockList.success){
 				for(let i in userList){
+					console.log(userList[i])
 					for(let j in blockList.data){
-						if(userList[i]==blockList.data[j].targetId){
+						console.log(userList[j])
+						if(userList[i] == blockList.data[j].targetId){
 							isBlock = true
 							break
 						}
