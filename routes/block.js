@@ -14,10 +14,9 @@ router.post('/upload', async function(req, res){
 	let body = req.body
 	body.blockId = uniqid()
 
-	let q = `INSERT INTO block VALUES ('${body.blockId}', '${body.userId}','${body.targetId}',
-	 UTC_TIMESTAMP(), UTC_TIMESTAMP())`
+	let q = `INSERT INTO block VALUES ('${body.blockId}', '${body.userId}','${body.targetId}', UTC_TIMESTAMP(), UTC_TIMESTAMP())`
 	
-	 let q_res = await sql(q)
+	let q_res = await sql(q)
 	
 	if(q_res.success){
 		res.status(200).json({data:body})

@@ -24,6 +24,26 @@ router.post('/createChatRoom', async function(req, res){
 		res.status(403).send({message:q_res.errorMessage})
 	}
 })
+router.post('/getChatNoticount', async function(req, res){
+	let body = req.body
+	body.chatRoomId = uniqid()
+	
+	let q = `SELECT chatRoom.*,
+        (SELECT COUNT(*) FROM chat WHERE chat.chatRoomId=chatRoom.chatRoomId AND 
+        chat.createdAt > (SELECT readTime from chat_readTime WHERE chat_readTime.userId='${body.userId}' AND chat_readTime.chatRoomId=chatRoom.chatRoomId)) AS notiCount,
+    FROM chatRoom
+    WHERE 
+    JSON_CONTAINS(chatRoom.userList,'${JSON.stringify([body.userId])}')
+	ORDER BY chatRoom.createdAt DESC`
+	let q_res = await sql(q)
+	
+	if(q_res.success){
+		res.status(200).json({data:body})
+	}else{
+		res.status(403).send({message:q_res.errorMessage})
+	}
+})
+		
 router.post('/getChatRoomList', async function(req, res){
 	let body = req.body
 	let q = `SELECT chatRoom.*,
@@ -34,7 +54,8 @@ router.post('/getChatRoomList', async function(req, res){
 		(SELECT imgList FROM chat WHERE chatRoomId=chatRoom.chatRoomId ORDER BY createdAt DESC LIMIT 1  ) AS imgList,
 		(SELECT writerId FROM chat WHERE chatRoomId=chatRoom.chatRoomId ORDER BY createdAt DESC LIMIT 1  ) AS writerId
     FROM chatRoom
-    WHERE 
+	WHERE
+	JSON_CONTAINS(chatRoom.outUserList, (SELECT targetId FROM block WHERE userId='${body.userId}'))=0 AND
     JSON_CONTAINS(chatRoom.outUserList,'${JSON.stringify([body.userId])}')=0 AND
     (
 		(openerId = '${body.userId}') OR
