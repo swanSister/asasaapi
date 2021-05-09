@@ -47,7 +47,7 @@ router.post('/getChatNoticount', async function(req, res){
 router.post('/getChatRoomList', async function(req, res){
 	let body = req.body
 	
-	let blockList = await sql(`SELET targetId FROM block WHERE userId = '${body.userId}'`)
+	let blockList = await sql(`SELECT targetId FROM block WHERE userId = '${body.userId}'`)
 	
 	let q = `SELECT chatRoom.*,
         (SELECT COUNT(*) FROM chat WHERE chat.chatRoomId=chatRoom.chatRoomId AND 
