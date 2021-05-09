@@ -55,7 +55,7 @@ router.post('/getChatRoomList', async function(req, res){
 		(SELECT writerId FROM chat WHERE chatRoomId=chatRoom.chatRoomId ORDER BY createdAt DESC LIMIT 1  ) AS writerId
     FROM chatRoom
 	WHERE
-	NOT EXIST (SELECT targetId FROM block WHERE userId='${body.userId}' AND JSON_CONTAINS(chatRoom.userList,block.targetId)=0)  AND
+	NOT EXIST (SELECT targetId FROM block WHERE userId='${body.userId}' AND JSON_CONTAINS(chatRoom.userList, targetId)=0)  AND
     JSON_CONTAINS(chatRoom.outUserList,'${JSON.stringify([body.userId])}')=0 AND
     (
 		(openerId = '${body.userId}') OR
