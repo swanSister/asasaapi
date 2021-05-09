@@ -43,13 +43,16 @@ router.post('/getNoticount', async function(req, res){
 	ORDER BY chatRoom.createdAt DESC`
 	
 	let q_res = await sql(q)
+
+	console.log(q_res.data)
+	
 	if(q_res.success){
 		let result_count = 0
 
 		q_res.data.map(function(item){
 			console.log("#########item")
 			let userList = JSON.parse(item.userList)
-
+			console.log(userList)
 			let isBlock = false
 			
 			if(blockList.success){
