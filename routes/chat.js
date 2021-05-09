@@ -30,7 +30,7 @@ router.post('/getNoticount', async function(req, res){
 	
 	let blockList = await sql(`SELECT targetId FROM block WHERE userId = '${body.userId}'`)
 	
-	let q = `SELECT chatRoom.chatRoomId,
+	let q = `SELECT chatRoom.*,
         (SELECT COUNT(*) FROM chat WHERE chat.chatRoomId=chatRoom.chatRoomId AND 
         chat.createdAt > (SELECT readTime from chat_readTime WHERE chat_readTime.userId='${body.userId}' AND chat_readTime.chatRoomId=chatRoom.chatRoomId)) AS notiCount
     FROM chatRoom
@@ -45,7 +45,7 @@ router.post('/getNoticount', async function(req, res){
 	let q_res = await sql(q)
 
 	console.log(q_res.data)
-	
+
 	if(q_res.success){
 		let result_count = 0
 
