@@ -69,7 +69,7 @@ router.post('/delete', async function(req, res){
 			console.log(chatRoomList)
 			for(let i in chatRoomList.data){
 				console.log("#######")
-				console.log(chatROomList.data[i])
+				console.log(chatRoomList.data[i])
 				await sql(`UPDATE chatRoom SET outUserList='["${body.userId}"]' WHERE
 				chatRoomId='${chatRoomList.data[i].chatRoomId}'`)
 			
