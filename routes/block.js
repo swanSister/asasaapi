@@ -59,7 +59,6 @@ router.post('/get', async function(req, res){
 router.post('/delete', async function(req, res){
 	let body = req.body
 
-
 	let q_res = await sql(`DELETE FROM block WHERE userId='${body.userId}' AND targetId='${body.targetId}'`)
 	if(q_res.success){
 		
@@ -68,6 +67,8 @@ router.post('/delete', async function(req, res){
 		JSON_CONTAINS(userList,'${JSON.stringify([body.userId])}') )`)
 		if(chatRoomList.success){
 			for(let i in chatRoomList.data){
+				console.log("#######")
+				console.log(chatROomList.data[i])
 				await sql(`UPDATE chatRoom SET outUserList='["${body.userId}"]' WHERE
 				chatRoomId='${chatRoomList.data[i].chatRoomId}'`)
 			
