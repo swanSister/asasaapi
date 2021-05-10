@@ -45,7 +45,7 @@ router.post('/get', async function(req, res){
 			obj.targetInfo = {
 				isPublic: item.isPublic,
 				houseType: item.houseType,
-				addressData: JSON.parse(item.addressData: JSON.parse(youData.addressData),)
+				addressData: JSON.parse(item.addressData)
 			}
 			result_arr.push(obj)
 			
