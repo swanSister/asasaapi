@@ -66,6 +66,7 @@ router.post('/delete', async function(req, res){
 		(JSON_CONTAINS(userList,'${JSON.stringify([body.userId])}') AND 
 		JSON_CONTAINS(userList,'${JSON.stringify([body.userId])}') )`)
 		if(chatRoomList.success){
+			console.log(chatRoomList)
 			for(let i in chatRoomList.data){
 				console.log("#######")
 				console.log(chatROomList.data[i])
