@@ -30,7 +30,7 @@ router.post('/get', async function(req, res){
 	let q_res = await sql(`SELECT block.*, user.isPublic, user.buildingName FROM block
 	INNER JOIN user ON block.userId=user.userId
 	WHERE block.userId='${body.userId}'
-	ORDER BY auth.createdAt DESC LIMIT ${body.limit} OFFSET ${body.offset}`)
+	ORDER BY block.createdAt DESC LIMIT ${body.limit} OFFSET ${body.offset}`)
 	
 	if(q_res.success){
 		let result_arr = []
