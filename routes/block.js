@@ -27,7 +27,7 @@ router.post('/upload', async function(req, res){
 router.post('/get', async function(req, res){
 	let body = req.body
 	
-	let q_res = await sql(`SELECT block.*, user.isPublic, user.buildingName FROM block
+	let q_res = await sql(`SELECT block.*, user.isPublic, user.houseType, user.addressData FROM block
 	INNER JOIN user ON block.userId=user.userId
 	WHERE block.userId='${body.userId}'
 	ORDER BY block.createdAt DESC LIMIT ${body.limit} OFFSET ${body.offset}`)
@@ -44,7 +44,8 @@ router.post('/get', async function(req, res){
 			obj.updatedAt = item.updatedAt
 			obj.targetInfo = {
 				isPublic: item.isPublic,
-				buildingName: item.buildingName
+				houseType: item.houseType,
+				addressData: JSON.parse(item.addressData: JSON.parse(youData.addressData),)
 			}
 			result_arr.push(obj)
 			
