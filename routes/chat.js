@@ -143,7 +143,7 @@ router.post('/getChatRoomList', async function(req, res){
 router.post('/getChatRoom', async function(req, res){
 	let body = req.body
 
-	let q = `SELECT *  WHERE chatRoomId='${body.chatRoomId}'`
+	let q = `SELECT * FROM chatRoom WHERE chatRoomId='${body.chatRoomId}'`
 	let q2 = `SELECT * FROM user WHERE userId='${body.youId}'`
 
 	let q_res = await sql(q)
