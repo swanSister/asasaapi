@@ -68,17 +68,15 @@ router.post('/delete', async function(req, res){
 		if(chatRoomList.success){
 			console.log(chatRoomList)
 			for(let i in chatRoomList.data){
-				console.log("#######")
-				console.log(chatRoomList.data[i])
-				let chatRoom_res1 =await sql(`UPDATE chatRoom SET outUserList='["${body.userId}"]' WHERE
+
+				await sql(`UPDATE chatRoom SET outUserList='["${body.userId}"]' WHERE
 				chatRoomId='${chatRoomList.data[i].chatRoomId}'`)
 			
-				let chatRoom_res2 = await sql(`UPDATE chat SET outUserList='["${body.userId}"]' WHERE
+				await sql(`UPDATE chat SET outUserList='["${body.userId}"]' WHERE
 				chatRoomId='${chatRoomList.data[i].chatRoomId}'`)
-				console.log("#####Res1")
-				console.log(chatRoom_res1)
-				console.log("#####Res2")
-				console.log(chatRoom_res2)
+	
+				await sql(`INSERT INTO chat_readTime VALUES('${chatRoomList.data[i].chatRoomId}','${body.userId}', UTC_TIMESTAMP(), UTC_TIMESTAMP(), UTC_TIMESTAMP())
+				ON DUPLICATE KEY UPDATE readTime=UTC_TIMESTAMP()`)
 			}
 		}
 		res.status(200).json({data:q_res.data})
