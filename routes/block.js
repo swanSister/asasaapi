@@ -77,11 +77,6 @@ router.post('/delete', async function(req, res){
 				chatRoomId='${chatRoomList.data[i].chatRoomId}'`)
 			}
 		}
-		res.status(200).json({data:q_res2.data})
-	}else{
-		res.status(403).send({message:q_res.errorMessage})
-	}
-	if(q_res.success){
 		res.status(200).json({data:q_res.data})
 	}else{
 		res.status(403).send({message:q_res.errorMessage})
