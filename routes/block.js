@@ -70,11 +70,15 @@ router.post('/delete', async function(req, res){
 			for(let i in chatRoomList.data){
 				console.log("#######")
 				console.log(chatRoomList.data[i])
-				await sql(`UPDATE chatRoom SET outUserList='["${body.userId}"]' WHERE
+				let chatRoom_res1 =await sql(`UPDATE chatRoom SET outUserList='["${body.userId}"]' WHERE
 				chatRoomId='${chatRoomList.data[i].chatRoomId}'`)
 			
-				await sql(`UPDATE chat SET outUserList='["${body.userId}"]' WHERE
+				let chatRoom_res2 = await sql(`UPDATE chat SET outUserList='["${body.userId}"]' WHERE
 				chatRoomId='${chatRoomList.data[i].chatRoomId}'`)
+				console.log("#####Res1")
+				console.log(chatRoom_res1)
+				console.log("#####Res2")
+				console.log(chatRoom_res2)
 			}
 		}
 		res.status(200).json({data:q_res.data})
