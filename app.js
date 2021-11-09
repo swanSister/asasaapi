@@ -12,6 +12,7 @@ const notice = require('./routes/notice')
 const alarm = require('./routes/alarm')
 const report = require('./routes/report')
 const block = require('./routes/block')
+const admin = require('./routes/admin')
 
 const io = require('socket.io')(3003);
 app.use(cors())
@@ -24,6 +25,7 @@ app.use('/notice', notice);
 app.use('/alarm', alarm);
 app.use('/report', report);
 app.use('/block', block);
+app.use('/admin', admin);
 
 app.set('socketio', io); 
 
